@@ -13,11 +13,7 @@ class MainController extends AbstractController
      */
     public function index(): Response
     {
-        $url = $this->generateUrl('main_homepage', []);
-        return $this->render('main/index.html.twig',
-            [
-                'url'=>$url
-            ]);
+        return $this->render('main/index.html.twig');
     }
 
     /**
@@ -25,10 +21,6 @@ class MainController extends AbstractController
      */
     public function presentation(): Response
     {
-        $url = $this->generateUrl('main_presentation', []);
-        return $this->render('main_presentation.html.twig',
-        [
-        'url'=>$url
-        ]);
+        return $this->render('main_presentation.html.twig');
     }
 }

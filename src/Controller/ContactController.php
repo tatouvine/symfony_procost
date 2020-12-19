@@ -13,10 +13,6 @@ class ContactController extends AbstractController
      */
     public function contact(): Response
     {
-        $url = $this->generateUrl('main_contact', []);
-        return $this->render('main_contact.html.twig',
-        [
-            'url'=>$url
-        ]);
+        return $this->render('main_contact.html.twig');
     }
 }

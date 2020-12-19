@@ -1,20 +1,45 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Contact | Shoefony - My Symfony Store !{% endblock %}
 
-{% block body %}
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Contactez notre service client</h1>
+            </div>
+        </div>
 
-    <div class="example-wrapper">
-        <h1>Hello {{url}}✅</h1>
+        <hr/>
 
-        This friendly message is coming from:
-        <ul>
-            <li>Your controller at <code><a href="{{ 'C:/wamp64/www/LP/CourDeFramexork/shoefony/src/Controller/MainController.php'|file_link(0) }}">src/Controller/MainController.php</a></code></li>
-            <li>Your template at <code><a href="{{ 'C:/wamp64/www/LP/CourDeFramexork/shoefony/templates/main/index.html.twig'|file_link(0) }}">templates/main/index.html.twig</a></code></li>
-        </ul>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="lead">
+                    Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo. Donec ullamcorper nulla non metus auctor fringilla.
+                </p>
+            </div>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="firstname">Votre prénom</label>
+                <input type="text" class="form-control" id="firstname" placeholder="Prénom">
+            </div>
+            <div class="form-group">
+                <label for="lastname">Votre nom</label>
+                <input type="text" class="form-control" id="lastname" placeholder="Nom">
+            </div>
+            <div class="form-group">
+                <label for="email">Votre adresse email</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Adresse email">
+            </div>
+            <div class="form-group">
+                <label for="message">Votre message</label>
+                <textarea class="form-control" name="message" rows="6"></textarea>
+            </div>
+            <button type="submit" class="btn btn-info">Envoyer mon message</button>
+        </form>
+
+        <hr/>
+
     </div>
 {% endblock %}
