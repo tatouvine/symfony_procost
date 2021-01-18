@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Contact;
+use App\Entity\Src\Contact;
 use App\Form\ContactType;
+use App\Manager\ContactManager;
+use App\Service\ContactMailer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
+    private ContactManager $contactManager;
+    public function __construct(ContactManager $contactManager){
+        $this->contactManager = $contactManager;
+    }
     /**
      * @Route("/", name="main_homepage")
      */
@@ -32,7 +38,6 @@ class MainController extends AbstractController
      */
     public function contact(Request $request): Response
     {
-        // Creation de notre ebtité et du formulaire basé dessus
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
 
@@ -42,6 +47,8 @@ class MainController extends AbstractController
         // Dans le cas de la soumission d'un formulaire valide
         if ($form->isSubmitted() && $form->isValid()) {
             $this->addFlash('success', 'Merci, votre message a été pis en compte !');
+
+            $this->contactManager->save($contact);
             // Action à effectuer aprés envoie du formulaire
 
             return $this->redirectToRoute('main_contact');
