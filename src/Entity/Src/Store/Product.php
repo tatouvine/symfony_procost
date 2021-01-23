@@ -31,11 +31,17 @@ class Product
      * @ORM\Column(type="text")
      */
     private ?string $description = null;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="text")
+     */
+    private ?string $descriptionLong = null;
+
     /**
      * @var string|null
      * @ORM\Column(type="decimal",precision=10,scale=2)
      */
-
     private ?string $price = null;
 
     /**
@@ -44,94 +50,134 @@ class Product
      */
     private DateTime $createdAt;
 
+    /**
+     * @ORM\Column(type="string",length=255)
+     */
+    private string $slug;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Src\Store\Image",cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false,name="sto_image_id")
+     */
+    private ?Image $image = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Src\Store\Brand",inversedBy="products")
+     * @ORM\JoinColumn(nullable=false,name="sto_brand_id")
+     */
+    private ?Brand $brand = null;
+
+
     public function __construct()
     {
         $this->createdAt = new DateTime();
+        //$this->colors = new ArrayCollection();
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function setId(?int $id): Product
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     */
     public function setName(?string $name): Product
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string|null $description
-     */
     public function setDescription(?string $description): Product
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
+    public function getDescriptionLong(): ?string
+    {
+        return $this->descriptionLong;
+    }
+
+    public function setDescriptionLong(?string $descriptionLong): Product
+    {
+        $this->descriptionLong = $descriptionLong;
+        return $this;
+    }
+
     public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    /**
-     * @param string|null $price
-     */
     public function setPrice(?string $price): Product
     {
         $this->price = $price;
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param DateTime $createdAt
-     */
     public function setCreatedAt(DateTime $createdAt): Product
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(Image $image): self
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+        return $this;
+    }
+
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(Brand $brand): self
+    {
+        $this->brand = $brand;
+        return $this;
+    }
+/**
+    public function removeColors(Color $color): self
+    {
+        if ($this->colors->contains($color)) {
+            $this->colors->removeElement($color);
+        }
+        return $this;
+    }**/
 }

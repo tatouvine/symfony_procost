@@ -29,13 +29,27 @@ class StoreController extends AbstractController
     }
 
     /**
+     * @Route("/store/{brand}", name="store_with_brand")
+     * @param Request $request
+     * @param int $brand
+     * @return Response
+     */
+    public function storeWithBrand(Request $request,int $brand): Response
+    {
+        $products = $this->productRepository->findBy(['brand'=>$brand]);
+        return $this->render('store_all_product.html.twig', [
+            'products' => $products,
+        ]);
+    }
+
+    /**
      * @Route("/store/product/{id}/details/{slug}", name="store_one_product", requirements={"id":"\d+"},methods={"GET"})
      */
     public function store(Request $request, int $id, string $slug): Response
     {
+        $product = $this->productRepository->find($id);
         return $this->render('store_one_product.html.twig', [
-            'id' => $id,
-            'slug' => $slug,
+            'product' => $product
         ]);
     }
 }
