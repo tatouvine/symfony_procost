@@ -4,6 +4,8 @@ namespace App\Entity\Src\Store;
 
 use App\Repository\Src\Store\ProductRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -67,11 +69,17 @@ class Product
      */
     private ?Brand $brand = null;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Src\Store\Color")
+     * ORM\@ORM\JoinTable(name="sto_product_color")
+     */
+    private $colors;
+
 
     public function __construct()
     {
         $this->createdAt = new DateTime();
-        //$this->colors = new ArrayCollection();
+        $this->colors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -172,12 +180,28 @@ class Product
         $this->brand = $brand;
         return $this;
     }
-/**
-    public function removeColors(Color $color): self
+
+    /**
+     * @return Collection| Color[]
+     */
+    public function getColors(): Collection
+    {
+        return $this->colors;
+    }
+
+    public function addColor(Color $color): self
+    {
+        if (!$this->colors->contains($color)) {
+            $this->colors[] = $color;
+        }
+        return $this;
+    }
+
+    public function removeColor(Color $color): self
     {
         if ($this->colors->contains($color)) {
             $this->colors->removeElement($color);
         }
         return $this;
-    }**/
+    }
 }

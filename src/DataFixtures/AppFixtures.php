@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Src\Store\Brand;
+use App\Entity\Src\Store\Color;
 use App\Entity\Src\Store\Image;
 use App\Entity\Src\Store\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,6 +17,7 @@ class AppFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->loadBrands();
+        $this->loadColors();
         $this->loadProducts();
         $this->manager->flush();
 
@@ -35,6 +37,26 @@ class AppFixtures extends Fixture
             $brand = (new Brand())->setName((string)$name);
             $this->manager->persist($brand);
             $this->addReference(Brand::class . $key, $brand);
+        }
+    }
+
+    private function loadColors(): void
+    {
+        $colors = [
+            ["jaune"],
+            ["rose"],
+            ["noir"],
+            ["gris"],
+            ["rouge"],
+            ["vert"],
+            ["bleu"],
+            ["blanc"],
+            ["noir"],
+        ];
+        foreach ($colors as $key => [$name]) {
+            $color = (new Color())->setName((string)$name);
+            $this->manager->persist($color);
+            $this->addReference(Color::class . $key, $color);
         }
     }
 
@@ -63,6 +85,11 @@ class AppFixtures extends Fixture
 
             $brand = $this->getReference(Brand::class . random_int(1, 3));
             $product->setBrand($brand);
+
+            for ($j = 0; $j <= random_int(0, 3); $j++) {
+                $color = $this->getReference(Color::class . random_int(0, 8));
+                $product->addColor($color);
+            }
 
             $this->manager->persist($product);
         }
