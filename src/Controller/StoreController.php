@@ -27,8 +27,10 @@ class StoreController extends AbstractController
     public function storeAll(): Response
     {
         $products = $this->productRepository->findAll();
+        $brands = $this->brandRepository->findAll();
         return $this->render('store_all_product.html.twig', [
             'products' => $products,
+            'brands' => $brands
         ]);
     }
 
@@ -41,8 +43,12 @@ class StoreController extends AbstractController
     public function storeWithBrand(Request $request, int $brand): Response
     {
         $products = $this->productRepository->findBy(['brand' => $brand]);
+        $brands = $this->brandRepository->findAll();
+        $actualyBrand= ($this->brandRepository->find($brand))->getName();
         return $this->render('store_all_product.html.twig', [
             'products' => $products,
+            'brands' => $brands,
+            'actualyBrand'=>$actualyBrand
         ]);
     }
 
@@ -52,19 +58,21 @@ class StoreController extends AbstractController
     public function store(Request $request, int $id, string $slug): Response
     {
         $product = $this->productRepository->find($id);
-        if($product === null){
+        if ($product === null) {
             throw new NotFoundHttpException();
         }
-        if($product->getSlug() !== $slug){
-            return $this->redirectToRoute('store_show_product',[
-                'id'=>$id,
-                'slug'=>$product->getSlug(),
-            ],HTTP_MOVED_PERMANENTLY);
+        if ($product->getSlug() !== $slug) {
+            return $this->redirectToRoute('store_show_product', [
+                'id' => $id,
+                'slug' => $product->getSlug(),
+            ], HTTP_MOVED_PERMANENTLY);
         }
         $brands = $this->brandRepository->findAll();
-            return $this->render('store_one_product.html.twig', [
-                'product' => $product,
-                'brands' => $brands
-            ]);
+        $actualyBrand = $product->getBrand()->getName();
+        return $this->render('store_one_product.html.twig', [
+            'product' => $product,
+            'brands' => $brands,
+            'actualyBrand' =>$actualyBrand
+        ]);
     }
 }
