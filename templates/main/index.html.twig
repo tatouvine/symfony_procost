@@ -38,16 +38,17 @@
         </div>
 
         <div class="row text-center">
-            {% for i in 1..4 %}
+            {% for product in lastProducts %}
                 <div class="col-md-3 col-sm-6 hero-feature">
                     <div class="thumbnail">
-                        <img src="{{ asset("img/products/shoe-"~i~".jpg")}}" alt="Nom du produit">
+                        <img src="{{ asset(product.image.url) }}" alt="{{ product.image.alt }}">
                         <div class="caption">
-                            <h3>Nom du produit</h3>
+                            <h3>{{ product.description }}</h3>
                             <p>Une description courte du produit sera affichée à cet endroit.</p>
                             <p>
-                                <span class="badge">120,00 €</span>
-                                <a href="{{ path('store_one_product',{'id':i,'slug':"test"}) }}" class="btn btn-default">Voir la fiche</a>
+                                <span class="badge">{{ product.price }}</span>
+                                <a href="{{ asset('/store/product/'~product.id~'/details/'~product.slug) }}"
+                                   class="btn btn-default">Voir la fiche</a>
                             </p>
                         </div>
                     </div>
@@ -65,16 +66,17 @@
         </div>
 
         <div class="row text-center">
-            {% for i in 5..8 %}
+            {% for product in popularProducts %}
                 <div class="col-md-3 col-sm-6 hero-feature">
                     <div class="thumbnail">
-                        <img src="{{ asset("img/products/shoe-"~i~".jpg")}}" alt="Nom du produit">
+                        <img src="{{ asset(product.image.url) }}" alt="{{ product.image.alt }}">
                         <div class="caption">
-                            <h3>Nom du produit</h3>
+                            <h3>{{ product.description }}</h3>
                             <p>Une description courte du produit sera affichée à cet endroit.</p>
                             <p>
-                                <span class="badge">120,00 €</span>
-                                <a href="{{ path('store_one_product',{'id':i,'slug':"test"}) }}" class="btn btn-default">Voir la fiche</a>
+                                <span class="badge">{{ product.price }}</span>
+                                <a href="{{ asset('/store/product/'~product.id~'/details/'~product.slug) }}"
+                                   class="btn btn-default">Voir la fiche</a>
                             </p>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Src\Contact;
 use App\Form\ContactType;
 use App\Manager\ContactManager;
+use App\Repository\Src\Store\ProductRepository;
 use App\Service\ContactMailer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,15 +15,25 @@ use Symfony\Component\Routing\Annotation\Route;
 class MainController extends AbstractController
 {
     private ContactManager $contactManager;
-    public function __construct(ContactManager $contactManager){
+    private ProductRepository $productRepository;
+
+    public function __construct(ContactManager $contactManager, ProductRepository $productRepository)
+    {
         $this->contactManager = $contactManager;
+        $this->productRepository = $productRepository;
     }
+
     /**
      * @Route("/", name="main_homepage")
      */
     public function index(): Response
     {
-        return $this->render('main/index.html.twig');
+        $lastProducts = $this->productRepository->findByTimeFourLastProduct();
+        $popularProducts = $this->productRepository->findByFourProductHaveLotOfComment();
+        return $this->render('main/index.html.twig', [
+            'lastProducts' => $lastProducts,
+            'popularProducts' => $popularProducts
+        ]);
     }
 
     /**

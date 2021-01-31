@@ -2,8 +2,10 @@
 
 namespace App\Repository\Src\Store;
 
+use App\Entity\Src\Store\Comment;
 use App\Entity\Src\Store\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,45 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findByTimeFourLastProduct()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('i')
+            ->leftJoin('p.image', 'i')
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults(4);
+        return $qb->getQuery()->getResult();
     }
-    */
+
+    public function findByFourProductHaveLotOfComment()
+    {
+        /**
+         * SELECT * , COUNT(*)
+         * FROM sto_product INNER JOIN sto_comment on sto_product.id = sto_comment.sto_product_id
+         * GROUP BY sto_product.id
+         * HAVING COUNT(*) >0
+         * ORDER BY COUNT(*) DESC
+         */
+        $qb = $this->createQueryBuilder('p')
+            ->select('p')
+            ->addSelect('i')
+            ->leftJoin('p.image', 'i')
+            ->innerJoin(Comment::class, 'comment', Join::WITH, 'p.id = comment.product')
+            ->groupBy('p.id')
+            ->having('count(p)>0')
+            ->orderBy('count(p)', 'DESC')
+            ->setMaxResults(4);
+        return $qb->getQuery()->getResult();
+    }
+
 
     /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+        public function findAllWithImage()
+        {
+            $qb = $this->createQueryBuilder('p')
+                ->addSelect('i')
+                ->leftJoin('p.image', 'i');
+            return $qb->getQuery()->getResult();
+        }
+        */
 }

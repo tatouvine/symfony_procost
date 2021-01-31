@@ -73,13 +73,19 @@ class Product
      * @ORM\ManyToMany(targetEntity="App\Entity\Src\Store\Color")
      * ORM\@ORM\JoinTable(name="sto_product_color")
      */
-    private $colors;
+    private Collection $colors;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Src\Store\Comment",mappedBy="product")
+     */
+    private $comments;
 
 
     public function __construct()
     {
         $this->createdAt = new DateTime();
         $this->colors = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,6 +207,31 @@ class Product
     {
         if ($this->colors->contains($color)) {
             $this->colors->removeElement($color);
+        }
+        return $this;
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setProduct($this);
+        }
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            if ($comment->getProduct() === $this) {
+                $comment->setProduct(null);
+            }
         }
         return $this;
     }
