@@ -2,9 +2,11 @@
 
 namespace App\Repository\Src\Store;
 
+use App\Entity\Src\Store\Color;
 use App\Entity\Src\Store\Comment;
 use App\Entity\Src\Store\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -53,13 +55,39 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
-    /*
-        public function findAllWithImage()
-        {
-            $qb = $this->createQueryBuilder('p')
-                ->addSelect('i')
-                ->leftJoin('p.image', 'i');
-            return $qb->getQuery()->getResult();
-        }
-        */
+    public function findAllWithImage()
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('i')
+            ->leftJoin('p.image', 'i');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllWithImageById(int $brand)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('i')
+            ->leftJoin('p.image', 'i')
+            ->where('p.brand = :brand')
+            ->setParameter('brand', $brand);
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByIdAndSlug(int $id, string $slug)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('i')
+            ->addSelect('b')
+            ->addSelect('colors')
+            ->addSelect('comments')
+            ->leftJoin('p.image', 'i')
+            ->leftJoin('p.brand', 'b')
+            ->leftJoin('p.colors', 'colors')
+            ->leftJoin('p.comments','comments')
+            ->where('p.id = :id')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('id', $id)
+            ->setParameter('slug', $slug);
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

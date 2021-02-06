@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Src\Store\Comment;
+use App\Form\CommentType;
+use App\Manager\CommentManager;
 use App\Repository\Src\Store\BrandRepository;
 use App\Repository\Src\Store\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,11 +17,13 @@ class StoreController extends AbstractController
 {
     private ProductRepository $productRepository;
     private BrandRepository $brandRepository;
+    private CommentManager $commentManager;
 
-    public function __construct(ProductRepository $productRepository, BrandRepository $brandRepository)
+    public function __construct(ProductRepository $productRepository, BrandRepository $brandRepository, CommentManager $commentManager)
     {
         $this->productRepository = $productRepository;
         $this->brandRepository = $brandRepository;
+        $this->commentManager = $commentManager;
     }
 
     /**
@@ -26,11 +31,11 @@ class StoreController extends AbstractController
      */
     public function storeAll(): Response
     {
-        $products = $this->productRepository->findAll();
+        $products = $this->productRepository->findAllWithImage();
         $brands = $this->brandRepository->findAll();
         return $this->render('store_all_product.html.twig', [
             'products' => $products,
-            'brands' => $brands
+            'brands' => $brands,
         ]);
     }
 
@@ -42,37 +47,53 @@ class StoreController extends AbstractController
      */
     public function storeWithBrand(Request $request, int $brand): Response
     {
-        $products = $this->productRepository->findBy(['brand' => $brand]);
+        $products = $this->productRepository->findAllWithImageById($brand);
         $brands = $this->brandRepository->findAll();
-        $actualyBrand= ($this->brandRepository->find($brand))->getName();
         return $this->render('store_all_product.html.twig', [
             'products' => $products,
             'brands' => $brands,
-            'actualyBrand'=>$actualyBrand
+            'actualBrand' => $brand
         ]);
     }
 
     /**
-     * @Route("/store/product/{id}/details/{slug}", name="store_one_product", requirements={"id":"\d+"},methods={"GET"})
+     * @Route("/store/product/{id}/details/{slug}", name="store_one_product", requirements={"id":"\d+"},methods={"GET","POST"})
+     * @param Request $request
+     * @param int $id
+     * @param string $slug
+     * @return Response
      */
     public function store(Request $request, int $id, string $slug): Response
     {
-        $product = $this->productRepository->find($id);
+
+
+        $product = $this->productRepository->findByIdAndSlug($id, $slug);
         if ($product === null) {
             throw new NotFoundHttpException();
         }
-        if ($product->getSlug() !== $slug) {
-            return $this->redirectToRoute('store_show_product', [
-                'id' => $id,
-                'slug' => $product->getSlug(),
-            ], HTTP_MOVED_PERMANENTLY);
+
+        $comment = new Comment();
+        $comment->setProduct($product);
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        $commentaires = $product->getComments()->getValues();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->addFlash('success', 'Merci, votre message a été pis en compte !');
+
+            $this->commentManager->save($comment);
+            return $this->redirectToRoute('store_one_product',
+                [
+                    'id' => $id,
+                    'slug' => $slug
+                ]);
         }
-        $brands = $this->brandRepository->findAll();
-        $actualyBrand = $product->getBrand()->getName();
+
+
         return $this->render('store_one_product.html.twig', [
             'product' => $product,
-            'brands' => $brands,
-            'actualyBrand' =>$actualyBrand
+            'commentaires' => $commentaires,
+            'form' => $form->createView()
+
         ]);
     }
 }

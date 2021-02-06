@@ -40,22 +40,11 @@
         <div class="row text-center">
             {% for product in lastProducts %}
                 <div class="col-md-3 col-sm-6 hero-feature">
-                    <div class="thumbnail">
-                        <img src="{{ asset(product.image.url) }}" alt="{{ product.image.alt }}">
-                        <div class="caption">
-                            <h3>{{ product.description }}</h3>
-                            <p>Une description courte du produit sera affichée à cet endroit.</p>
-                            <p>
-                                <span class="badge">{{ product.price }}</span>
-                                <a href="{{ asset('/store/product/'~product.id~'/details/'~product.slug) }}"
-                                   class="btn btn-default">Voir la fiche</a>
-                            </p>
-                        </div>
-                    </div>
+                    {% include 'one_item_template.html.twig' %}
                 </div>
             {% endfor %}
-
         </div>
+
 
         <hr/>
 
@@ -68,18 +57,7 @@
         <div class="row text-center">
             {% for product in popularProducts %}
                 <div class="col-md-3 col-sm-6 hero-feature">
-                    <div class="thumbnail">
-                        <img src="{{ asset(product.image.url) }}" alt="{{ product.image.alt }}">
-                        <div class="caption">
-                            <h3>{{ product.description }}</h3>
-                            <p>Une description courte du produit sera affichée à cet endroit.</p>
-                            <p>
-                                <span class="badge">{{ product.price }}</span>
-                                <a href="{{ asset('/store/product/'~product.id~'/details/'~product.slug) }}"
-                                   class="btn btn-default">Voir la fiche</a>
-                            </p>
-                        </div>
-                    </div>
+                    {% include 'one_item_template.html.twig' %}
                 </div>
             {% endfor %}
         </div>

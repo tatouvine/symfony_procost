@@ -6,6 +6,7 @@ use App\Repository\Src\Store\BrandRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BrandRepository::class)
@@ -21,12 +22,16 @@ class Comment
     private ?int $id = null;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string",length=255)
+     * @Assert\NotBlank(message="Ce champ ne peut pas être vide.")
      */
     private ?string $pseudo = null;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string",length=255)
+     * @Assert\NotBlank(message="Ce champ ne peut pas être vide.")
      */
     private ?string $message = null;
 

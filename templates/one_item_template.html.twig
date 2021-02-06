@@ -1,0 +1,12 @@
+<div class="thumbnail">
+    <img src="{{ asset(product.image.url) }}" alt="{{ product.image.alt }}">
+    <div class="caption">
+        <h3>{{ product.description }}</h3>
+        <p>Une description courte du produit sera affichée à cet endroit.</p>
+        <p>
+            <span class="badge">{{ product.price }}</span>
+            <a href="{{ asset('/store/product/'~product.id~'/details/'~product.slug) }}"
+               class="btn btn-default">Voir la fiche</a>
+        </p>
+    </div>
+</div>
