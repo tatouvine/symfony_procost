@@ -32,10 +32,8 @@ class StoreController extends AbstractController
     public function storeAll(): Response
     {
         $products = $this->productRepository->findAllWithImage();
-        $brands = $this->brandRepository->findAll();
         return $this->render('store_all_product.html.twig', [
             'products' => $products,
-            'brands' => $brands,
         ]);
     }
 
@@ -48,10 +46,8 @@ class StoreController extends AbstractController
     public function storeWithBrand(Request $request, int $brand): Response
     {
         $products = $this->productRepository->findAllWithImageById($brand);
-        $brands = $this->brandRepository->findAll();
         return $this->render('store_all_product.html.twig', [
             'products' => $products,
-            'brands' => $brands,
             'actualBrand' => $brand
         ]);
     }
@@ -65,8 +61,6 @@ class StoreController extends AbstractController
      */
     public function store(Request $request, int $id, string $slug): Response
     {
-
-
         $product = $this->productRepository->findByIdAndSlug($id, $slug);
         if ($product === null) {
             throw new NotFoundHttpException();

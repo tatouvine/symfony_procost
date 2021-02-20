@@ -9,13 +9,9 @@
             <div class="col-md-3">
                 <p class="lead">Nos marques</p>
                 {% if actualBrand is defined %}
-                    {{ render(controller(
-                        'App\\Controller\\AllComposant::composantBrand',{brand: actualBrand}
-                    )) }}
+                    {{ render(controller('App\\Controller\\AllComposant::composantBrand',{brand: actualBrand})) }}
                 {% else %}
-                    {{ render(controller(
-                        'App\\Controller\\AllComposant::composantBrand',{brand: -1}
-                    )) }}
+                    {{ render(controller('App\\Controller\\AllComposant::composantBrand',{brand: -1})) }}
                 {% endif %}
             </div>
 

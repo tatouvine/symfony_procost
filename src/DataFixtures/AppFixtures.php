@@ -7,18 +7,29 @@ use App\Entity\Src\Store\Color;
 use App\Entity\Src\Store\Comment;
 use App\Entity\Src\Store\Image;
 use App\Entity\Src\Store\Product;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
     private $manager;
     private $variableIdStockForComment = 13;
+    private UserPasswordEncoderInterface $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
 
     public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
+        $this->loadUsers();
         $this->loadComments();
         $this->loadBrands();
         $this->loadColors();
@@ -46,30 +57,33 @@ class AppFixtures extends Fixture
 
     private function loadComments(): void
     {
+        var_dump("ici");
         $comments =
             [
-                ["aaaaaaaa", "vzvartezvtarztrvzvtrtvzrzvrzrtv", new DateTime()],
-                ["bbbbbbbbb", "vzrvrztevtzrevztrevtzrtvrzetvzre", new DateTime()],
-                ["ccccccccc", "tvzrezvrtzvtrztrvztvrezrvterztve", new DateTime()],
-                ["ddddddd", "vzrtezvrtezvtretrzvtzrvztrvvzrttrzvztrvtzrvtvzr", new DateTime()],
-                ["eeeeeeeeee", "ztvztrevtzrrztvzrtvzrtvzrtvzrtvrtvzev", new DateTime()],
-                ["ffffff", "vvztrtzrvzrvtzvrtrztvtrvz", new DateTime()],
-                ["gggggggggggg", "ztvtzvrtvzrzrtvzrvtvrtzztvrzvtrzvtrezrtvzrtvzrtvzrtvervzte", new DateTime()],
-                ["hhhhhhhhhhhh", "acareacercaercreacraeraceraeczrcaeacreraec", new DateTime()],
-                ["iiiiiiiiiiiiiii", "ccraezcraezcraearcezracez", new DateTime()],
-                ["jjjjjjjjjjjjjjjjj", "ccraezcraezcraearcezracez", new DateTime()],
-                ["kkkkkkkkkkkkkkkkk", "ccraezcraezcraearcezracez", new DateTime()],
-                ["llllllllllllll", "ccraezcraezcraearcezracez", new DateTime()],
-                ["mmmmmmmmmmmmmm", "ccraezcraezcraearcezracez", new DateTime()],
-                ["ppppppppppppppp", "ccraezcraezcraearcezracez", new DateTime()],
+                ["vzvartezvtarztrvzvtrtvzrzvrzrtv", new DateTime()],
+                ["vzrvrztevtzrevztrevtzrtvrzetvzre", new DateTime()],
+                ["tvzrezvrtzvtrztrvztvrezrvterztve", new DateTime()],
+                ["vzrtezvrtezvtretrzvtzrvztrvvzrttrzvztrvtzrvtvzr", new DateTime()],
+                ["ztvztrevtzrrztvzrtvzrtvzrtvzrtvrtvzev", new DateTime()],
+                ["vvztrtzrvzrvtzvrtrztvtrvz", new DateTime()],
+                ["ztvtzvrtvzrzrtvzrvtvrtzztvrzvtrzvtrezrtvzrtvzrtvzrtvervzte", new DateTime()],
+                ["acareacercaercreacraeraceraeczrcaeacreraec", new DateTime()],
+                ["ccraezcraezcraearcezracez", new DateTime()],
+                ["ccraezcraezcraearcezracez", new DateTime()],
+                ["ccraezcraezcraearcezracez", new DateTime()],
+                ["ccraezcraezcraearcezracez", new DateTime()],
+                ["ccraezcraezcraearcezracez", new DateTime()],
+                ["ccraezcraezcraearcezracez", new DateTime()],
             ];
 
         foreach ($comments as $key => $oneComment) {
-            $comment = (new Comment())->setPseudo((string)$oneComment[0])
-                ->setMessage((string)$oneComment[1])
-                ->setCreatedAt($oneComment[2]);
+            $comment = (new Comment())->setMessage((string)$oneComment[0])
+                ->setCreatedAt($oneComment[1]);
+            $user = $this->getReference(User::class . random_int(0, 13));
+            $comment->setUser($user);
             $this->manager->persist($comment);
             $this->addReference(Comment::class . $key, $comment);
+
         }
     }
 
@@ -90,6 +104,35 @@ class AppFixtures extends Fixture
             $color = (new Color())->setName((string)$name);
             $this->manager->persist($color);
             $this->addReference(Color::class . $key, $color);
+        }
+    }
+
+    private function loadUsers(): void
+    {
+        $users =
+            [
+                ["user1", "123"],
+                ["user2", "123"],
+                ["user3", "123"],
+                ["user4", "123"],
+                ["user5", "123"],
+                ["user6", "123"],
+                ["user7", "123"],
+                ["user8", "123"],
+                ["user9", "123"],
+                ["user10", "123"],
+                ["user11", "123"],
+                ["user12", "123"],
+                ["user13", "123"],
+                ["user14", "123"],
+            ];
+        foreach ($users as $key => $oneUser) {
+            $user = (new User())->setUsername($oneUser[0])
+                ->setRoles(['ROLE_USER']);
+            $user->setPassword($this->encoder->encodePassword($user, $oneUser[1]));
+            $this->manager->persist($user);
+            $this->manager->persist($user);
+            $this->addReference(User::class . $key, $user);
         }
     }
 
@@ -141,9 +184,13 @@ class AppFixtures extends Fixture
 
     private function generateComment(): ?int
     {
-        $comment = (new Comment())->setPseudo("MonPseudo")
-            ->setMessage("Mon message et super cool")
-            ->setCreatedAt(new DateTime());
+        $comment = (new Comment())->setMessage("Mon message et super cool")
+            ->setCreatedAt(new DateTime()
+            );
+
+        $user = $this->getReference(User::class . random_int(0, 13));
+        $comment->setUser($user);
+
         $this->manager->persist($comment);
         $this->variableIdStockForComment++;
         $this->addReference(Comment::class . $this->variableIdStockForComment, $comment);

@@ -70,7 +70,7 @@ class Product
     private ?Brand $brand = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Src\Store\Color")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Src\Store\Color", inversedBy="products")
      * ORM\@ORM\JoinTable(name="sto_product_color")
      */
     private Collection $colors;

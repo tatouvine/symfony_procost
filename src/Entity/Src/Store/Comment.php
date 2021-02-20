@@ -26,13 +26,6 @@ class Comment
      * @ORM\Column(type="string",length=255)
      * @Assert\NotBlank(message="Ce champ ne peut pas être vide.")
      */
-    private ?string $pseudo = null;
-
-    /**
-     * @var string|null
-     * @ORM\Column(type="string",length=255)
-     * @Assert\NotBlank(message="Ce champ ne peut pas être vide.")
-     */
     private ?string $message = null;
 
     /**
@@ -47,6 +40,12 @@ class Comment
      */
     private $product;
 
+    /**
+     * @ORM\ManyToOne (targetEntity="App\Entity\User", inversedBy="comments")
+     * @ORM\JoinColumn (name="sto_user_id")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->createdAt = new DateTime();
@@ -55,23 +54,6 @@ class Comment
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPseudo(): string
-    {
-        return $this->pseudo;
-    }
-
-    /**
-     * @param string $pseudo
-     */
-    public function setPseudo(string $pseudo): Comment
-    {
-        $this->pseudo = $pseudo;
-        return $this;
     }
 
     /**
@@ -122,6 +104,23 @@ class Comment
     public function setProduct($product): Comment
     {
         $this->product = $product;
+        return $this;
+    }
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param $user
+     * @return Comment
+     */
+    public function setUser($user): Comment
+    {
+        $this->user = $user;
         return $this;
     }
 
