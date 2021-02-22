@@ -3,26 +3,28 @@
 namespace App\Manager;
 
 use App\Entity\Src\Contact;
+use App\Event\ContactCreated;
 use App\Service\ContactMailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ContactManager
 {
 
     private EntityManagerInterface $em;
-    private ContactMailer $contactMailer;
+    private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(EntityManagerInterface $em, ContactMailer $contactMailer)
+    public function __construct(EntityManagerInterface $em,
+                                EventDispatcherInterface $eventDispatcher)
     {
         $this->em = $em;
-        $this->contactMailer = $contactMailer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function save(Contact $contact): void
     {
         $this->em->persist($contact);
         $this->em->flush();
-
-        $this->contactMailer->send($contact);
+        $this->eventDispatcher->dispatch(new ContactCreated($contact));
     }
 }

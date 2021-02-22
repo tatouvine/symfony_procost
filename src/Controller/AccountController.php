@@ -3,14 +3,19 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AccountController extends AbstractController
 {
-    public function __construct()
-    {
+    private RouterInterface $router;
 
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
     }
 
     /**
@@ -18,9 +23,14 @@ class AccountController extends AbstractController
      */
     public function firstPage(): Response
     {
-        return $this->render('pagePersonnel.html.twig', [
-            "numeroPage" => 1
-        ]);
+        if ($this->isGranted('ROLE_USER') === true || $this->isGranted('ROLE_ADMIN') === true) {
+            return $this->render('pagePersonnel.html.twig', [
+                "numeroPage" => 1
+            ]);
+        } else {
+            return new RedirectResponse($this->router->generate('security_login'));
+        }
+
     }
 
     /**

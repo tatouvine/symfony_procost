@@ -57,8 +57,6 @@ class MainController extends AbstractController
 
         // Dans le cas de la soumission d'un formulaire valide
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addFlash('success', 'Merci, votre message a été pis en compte !');
-
             $this->contactManager->save($contact);
             // Action à effectuer aprés envoie du formulaire
 

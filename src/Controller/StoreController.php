@@ -72,8 +72,6 @@ class StoreController extends AbstractController
         $form->handleRequest($request);
         $commentaires = $product->getComments()->getValues();
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addFlash('success', 'Merci, votre message a été pis en compte !');
-
             $this->commentManager->save($comment);
             return $this->redirectToRoute('store_one_product',
                 [
@@ -87,7 +85,6 @@ class StoreController extends AbstractController
             'product' => $product,
             'commentaires' => $commentaires,
             'form' => $form->createView()
-
         ]);
     }
 }
